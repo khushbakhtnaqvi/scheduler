@@ -37,3 +37,26 @@ export function getInterviewersForDay(state, day) {
   }
   return filteredDay[0].interviewers.map((interviewerId) => state.interviewers[interviewerId])
 }
+
+export function emptySpots(appointments, days, day) {
+  const filteredDay = days.filter(d => d.name === day);
+  const listOfAppointmentIds = filteredDay[0].appointments;
+  const listOfEmptyAppointment = listOfAppointmentIds.filter(appId => !appointments[appId].interview);
+  const spots = listOfEmptyAppointment.length;
+  return spots;
+}
+
+// export function updateSpots(state, requestType) {
+//   const days = state.days.map(day => {
+//     if (day.name === state.day) {
+//       if (requestType === "bookAppointment") {
+//         return { ...day, spots: day.spots - 1 }
+//       } else {
+//         return { ...day, spots: day.spots + 1 }
+//       }
+//     } else {
+//       return { ...day }
+//     }
+//   })
+//   return days;
+// }
