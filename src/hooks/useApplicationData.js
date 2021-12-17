@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
-import {emptySpots, updateSpots} from "helpers/selectors"
+import{ useState, useEffect } from "react";
+import { emptySpots } from "helpers/selectors"
 import axios from "axios";
 
 export default function useApplicationData(props) {
+  //setting state
   const [state, setState] = useState({
     day: "Monday",
     days: [],
@@ -10,10 +11,8 @@ export default function useApplicationData(props) {
   });
 
   const setDay = day => setState({ ...state, day });
-  const setDays = days => setState(prev => ({ ...prev, days }));
   
-  
-
+  //function to book interview
   function bookInterview(id, interview) {
     const appointment = {
       ...state.appointments[id],
@@ -23,24 +22,33 @@ export default function useApplicationData(props) {
       ...state.appointments,
       [id]: appointment
     };
-    const remainingSpots = emptySpots(appointments,state.days,state.day)
-    const dayId=state.days.findIndex(item=>item.name===state.day);
+
+    //fetching remaining spots on that day after booking the interview
+    const remainingSpots = emptySpots(appointments, state.days, state.day);
+
+    //getting array index of the selected day
+    const dayId = state.days.findIndex(item => item.name === state.day);
+    
+    //update the remaining spots in the state
     const dayObj = {
       ...state.days[dayId],
       spots: remainingSpots
-    }
+    };
+
+    //making a shallow copy if state
     const days = [
       ...state.days,
-    ]
+    ];
+
+    //assigning the copy of state to the days at index of the day
     days[dayId] = dayObj;
 
-    //const days = updateSpots(state, "bookAppointment")
-    return axios.put(`/api/appointments/${id}`, {interview})
-    .then(() => {
-      setState({...state, appointments, days})
-    })
+    return axios.put(`/api/appointments/${id}`, { interview })
+      .then(() => {
+        setState({ ...state, appointments, days })
+      })
   }
-
+  //function to cancel interview
   function cancelInterview(id) {
     const appointment = {
       ...state.appointments[id],
@@ -50,22 +58,31 @@ export default function useApplicationData(props) {
       ...state.appointments,
       [id]: appointment
     };
-    const remainingSpots = emptySpots(appointments,state.days,state.day)
-    const dayId=state.days.findIndex(item=>item.name===state.day);            
+
+    //fetching remaining spots on that day after booking the interview
+    const remainingSpots = emptySpots(appointments, state.days, state.day);
+
+    //getting array index of the selected day
+    const dayId = state.days.findIndex(item => item.name === state.day);
+    
+    //update the remaining spots in the state
     const dayObj = {
       ...state.days[dayId],
       spots: remainingSpots
-    }
+    };
+    //making a shallow copy if state
     const days = [
       ...state.days,
-    ]
-    days[dayId] = dayObj;
-    
-    //const days = updateSpots(state)
-    return axios.delete(`/api/appointments/${id}`)
-      .then(() => setState({ ...state, appointments, days}));
-  } 
+    ];
 
+    //assigning the copy of state to the days at index of the day
+    days[dayId] = dayObj;
+
+    return axios.delete(`/api/appointments/${id}`)
+      .then(() => setState({ ...state, appointments, days }));
+  };
+
+  // useEffect hook to make requests from axios
   useEffect(() => {
     Promise.all([
       axios.get('/api/days'),
@@ -77,5 +94,5 @@ export default function useApplicationData(props) {
     });
   }, []);
 
-  return { state,  setDay, bookInterview, cancelInterview }
+  return { state, setDay, bookInterview, cancelInterview };
 }

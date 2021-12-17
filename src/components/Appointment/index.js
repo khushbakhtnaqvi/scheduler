@@ -5,9 +5,9 @@ import Empty from "./Empty"
 import Status from "./Status";
 import Error from "./Error";
 import useVisualMode from "hooks/useVisualMode";
-import "components/Appointment/styles.scss"
 import Form from "./Form";
 import Confirm from "./Confirm";
+import "components/Appointment/styles.scss"
 
 export default function Appointment(props) {
 
@@ -29,20 +29,20 @@ export default function Appointment(props) {
       student: name,
       interviewer
     };
-    transition(SAVING)
+    transition(SAVING);
     props
       .bookInterview(props.id, interview)
       .then(() => { transition(SHOW) })
       .catch(error => transition(ERROR_SAVE, true));
-  }
+  };
 
   function deleteAppointment(id) {
-    transition(DELETING, true)
+    transition(DELETING, true);
     props
       .cancelInterview(props.id)
       .then(() => { transition(EMPTY) })
       .catch(error => transition(ERROR_DELETE, true));
-  }
+  };
   return (
     <article className="appointment">
       <Header time={props.time} />
@@ -65,7 +65,6 @@ export default function Appointment(props) {
           interviewer={props.interview.interviewer.id}
           student={props.interview.student}
           onSave={save}
-          //edit={true}
           name={props.interview.student}
         />
       )}
@@ -79,7 +78,6 @@ export default function Appointment(props) {
           onEdit={() => transition(EDIT)}
         />
       )}
-
     </article>
   );
-}
+};

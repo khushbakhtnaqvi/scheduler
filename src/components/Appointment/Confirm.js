@@ -1,6 +1,5 @@
 import React from "react";
 import Button from "components/Button";
-// import Show from "components/Appointment/";
 import "components/Appointment/styles.scss"
 
 export default function Confirm(props) {
@@ -13,4 +12,4 @@ export default function Confirm(props) {
       </section>
     </main>
   );
-}
+};
